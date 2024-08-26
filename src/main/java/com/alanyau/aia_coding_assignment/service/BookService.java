@@ -51,7 +51,7 @@ public class BookService {
         try {
             Specification<Book> specification = Specification.where(null);
 
-            if (author != null) {
+            if (author != null && !author.isEmpty()) {
                 specification = specification.and(BookSpecifications.hasAuthor(author));
             }
 
