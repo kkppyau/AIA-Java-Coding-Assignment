@@ -65,4 +65,25 @@ To run the unit tests:
 mvn clean test
 ```
 
+<img width="1105" alt="test-result" src="https://github.com/user-attachments/assets/76e5eb81-9042-47c2-b98c-a0a4783abd1d">
+
+<img width="765" alt="coverage" src="https://github.com/user-attachments/assets/528b62b9-ad61-427f-9b43-16fc5fac0e25">
+
+
 ## API Screenshots
+
+#### POST `/book/create` API
+
+| Success  | Failure |
+| ------------- | ------------- |
+| <img width="1392" alt="create-success" src="https://github.com/user-attachments/assets/1154f1e0-8d52-4c27-a4ef-7f4b9de5f37e">  | <img width="1392" alt="create-failure" src="https://github.com/user-attachments/assets/6750e00c-f50a-47d2-be1e-a59627ae9b5a"> |
+
+#### GET `/book/all` API
+
+<img width="1392" alt="find-all-success" src="https://github.com/user-attachments/assets/ab4bd168-ebae-43cd-9ad0-07d3c99769fc">
+
+#### DELETE `book/delete/{id}` API
+
+| Success  | Failure |
+| ------------- | ------------- |
+| <img width="1392" alt="delete-success" src="https://github.com/user-attachments/assets/c7e6ae70-d74d-456d-abd9-69b8d803e911"> | <img width="1392" alt="delete-failure" src="https://github.com/user-attachments/assets/838c4ffa-0acf-47b2-8dcf-3f469a201730"> |
