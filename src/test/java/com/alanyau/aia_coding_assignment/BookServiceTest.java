@@ -47,7 +47,7 @@ public class BookServiceTest {
     }
 
     @Test
-    public void testCreateBook_BookAlreadyExists() throws Exception {
+    public void testCreateBook_BookAlreadyExists() {
         BookRequestDTO newBookData = new BookRequestDTO("Book Title", "Author", true);
         Mockito.when(bookRepository.findByTitle("Book Title")).thenReturn(new Book(true, "Author", "Book Title"));
 
@@ -55,11 +55,22 @@ public class BookServiceTest {
     }
 
     @Test
-    public void testGetBooks_AllParams() throws Exception {
+    public void testGetBooks_AllParams() throws UnknownException {
         Mockito.when(bookRepository.findAll(Mockito.any(Specification.class))).thenReturn(Arrays.asList(
                 new Book(true, "Author1", "Book1")
         ));
         ResponseEntity<ApiResponseDTO<List<Book>>> response = bookService.getBooks("Author1", true);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().getResponse().size());
+    }
+
+    @Test
+    public void testGetBooks_EmptyAuthorAndNoPublished() throws UnknownException {
+        Mockito.when(bookRepository.findAll(Mockito.any(Specification.class))).thenReturn(Arrays.asList(
+                new Book(true, "Author1", "Book1")
+        ));
+        ResponseEntity<ApiResponseDTO<List<Book>>> response = bookService.getBooks("", null);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().getResponse().size());

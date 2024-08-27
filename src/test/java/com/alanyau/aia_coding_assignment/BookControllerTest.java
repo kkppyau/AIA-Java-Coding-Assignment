@@ -4,6 +4,7 @@ import com.alanyau.aia_coding_assignment.dto.request.BookRequestDTO;
 import com.alanyau.aia_coding_assignment.dto.response.ApiResponseDTO;
 import com.alanyau.aia_coding_assignment.exception.BookAlreadyExistsException;
 import com.alanyau.aia_coding_assignment.exception.BookNotFoundException;
+import com.alanyau.aia_coding_assignment.exception.UnknownException;
 import com.alanyau.aia_coding_assignment.model.Book;
 import com.alanyau.aia_coding_assignment.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +38,8 @@ public class BookControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    public static final String UNKNOWN_ERROR_MESSAGE = "Unknown error occurred";
 
     @Test
     public void testCreateBook_Success() throws Exception {
@@ -77,6 +80,19 @@ public class BookControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.response").value(
                         "[Author must be alphanumeric only, Published is required, Title must be alphanumeric only]"));
+    }
+
+    @Test
+    public void testCreateBook_UnknownException() throws Exception {
+        BookRequestDTO newBookData = new BookRequestDTO("BookTitle", "Author2", true);
+
+        Mockito.when(bookService.createBook(newBookData)).thenThrow(new UnknownException(UNKNOWN_ERROR_MESSAGE));
+
+        mockMvc.perform(post("/book/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newBookData)))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.response").value(UNKNOWN_ERROR_MESSAGE));
     }
 
     @Test
@@ -149,6 +165,16 @@ public class BookControllerTest {
     }
 
     @Test
+    public void testGetBooks_UnknownException() throws Exception {
+        Mockito.when(bookService.getBooks(null, null)).thenThrow(new UnknownException(UNKNOWN_ERROR_MESSAGE));
+
+        mockMvc.perform(get("/book/all")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.response").value(UNKNOWN_ERROR_MESSAGE));
+    }
+
+    @Test
     public void testDeleteBook_Success() throws Exception {
         ApiResponseDTO<String> response = new ApiResponseDTO<>(HttpStatus.OK.value(), "Book deleted successfully");
 
@@ -166,5 +192,14 @@ public class BookControllerTest {
         mockMvc.perform(delete("/book/delete/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.response").value("Book not found"));
+    }
+
+    @Test
+    public void testDeleteBook_UnknownException() throws Exception {
+        Mockito.when(bookService.deleteBook(1)).thenThrow(new UnknownException(UNKNOWN_ERROR_MESSAGE));
+
+        mockMvc.perform(delete("/book/delete/1"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.response").value(UNKNOWN_ERROR_MESSAGE));
     }
 }
